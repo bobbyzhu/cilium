@@ -36,6 +36,7 @@ var _ = Describe("K8sDatapathConfig", func() {
 		demoDSPath = helpers.ManifestGet("demo_ds.yaml")
 		ipsecDSPath = helpers.ManifestGet("ipsec_ds.yaml")
 
+		kubectl.Apply(ipsecDSPath).ExpectSuccess("cannot install IPsec keys")
 		kubectl.Exec("kubectl -n kube-system delete ds cilium")
 
 		waitToDeleteCilium(kubectl, logger)
@@ -43,13 +44,11 @@ var _ = Describe("K8sDatapathConfig", func() {
 
 	BeforeEach(func() {
 		kubectl.Apply(demoDSPath).ExpectSuccess("cannot install Demo application")
-		kubectl.Apply(ipsecDSPath).ExpectSuccess("cannot install IPsec keys")
 		kubectl.NodeCleanMetadata()
 	})
 
 	AfterEach(func() {
 		kubectl.Delete(demoDSPath)
-		kubectl.Delete(ipsecDSPath)
 		ExpectAllPodsTerminated(kubectl)
 
 		// Do not assert on success in AfterEach intentionally to avoid
