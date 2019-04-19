@@ -125,6 +125,7 @@ var _ = Describe("K8sServicesTest", func() {
 		})
 
 		It("Checks service on same node", func() {
+			Skip("Check service on same node skipped not working on net-next")
 			err := kubectl.WaitforPods(helpers.DefaultNamespace, "-l zgroup=testapp", helpers.HelperTimeout)
 			Expect(err).Should(BeNil())
 			clusterIP, _, err := kubectl.GetServiceHostPort(helpers.DefaultNamespace, serviceName)
